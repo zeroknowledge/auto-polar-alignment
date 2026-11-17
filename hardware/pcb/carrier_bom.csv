@@ -1,0 +1,21 @@
+Comment,Designator,Footprint,Quantity,Description,MPN / note,Mounting
+Pi header 2x20 F,J1,PinSocket_2x20_P2.54mm_Vertical_BOTTOM,1,"Raspberry Pi 40-pin socket, 2.54 mm, mounted on BOTTOM side",,"THT (bottom side, socket)"
+2x 1x8 socket (TMC2209),"U1,U2",PinSocket_2x08_Rows_P2.54mm,2,Two 1x8 female 2.54 mm sockets for a TMC2209 module,,THT
+Screw terminal 5.08 2P,"J2,J3,J4",TerminalBlock_5.08mm_1x02_Horizontal,3,"Screw terminal, 5.08 mm pitch, 2 pin",,THT
+JST XH 4P (B4B-XH-A),"J5,J6",JST_XH_B4B-XH-A_1x04_P2.50mm_Vertical,2,"JST XH 2.5 mm, 4 pin, vertical",B4B-XH-A,THT
+JST XH 2P (B2B-XH-A),"J7,J8,J9,J10",JST_XH_B2B-XH-A_1x02_P2.50mm_Vertical,4,"JST XH 2.5 mm, 2 pin, vertical",B2B-XH-A,THT
+Pin header 1x5,"J11,J12",PinHeader_1x05_P2.54mm_Vertical,2,1x5 2.54 mm header,,THT
+Pin header 1x2 + jumper,JP1,PinHeader_1x02_P2.54mm_Vertical,1,1x2 jumper header,,THT
+PTC 2A hold radial 5.08,"F1,F2",PTC_Radial_P5.08mm,2,"Radial resettable fuse, 2 A hold",,THT
+1N5822,D1,D_DO-201AD_P12.70mm_Horizontal,1,Schottky 3 A 40 V axial,1N5822,THT
+1.5KE18A,D2,D_DO-201AD_P12.70mm_Horizontal,1,TVS 1500 W 18 V unidirectional axial,1.5KE18A,THT
+220uF 35V,C1,CP_Radial_D8.0mm_P3.50mm,1,Electrolytic 220 uF 35 V radial,,THT
+100uF 35V,"C2,C3",CP_Radial_D6.3mm_P2.50mm,2,Electrolytic 100 uF 35 V radial,,THT
+100nF 50V X7R,"C4,C5,C6,C7,C8,C9",R_0805_2012Metric,6,Ceramic 100 nF 50 V X7R,,SMD (top)
+1k,"R1,R4,R5,R6,R7,R8",R_0805_2012Metric,6,Resistor 1 kOhm,,SMD (top)
+10k,"R2,R3",R_0805_2012Metric,2,Resistor 10 kOhm,,SMD (top)
+LED red,LED1,LED_0805_2012Metric,1,"Red LED 0805 (pin1 = cathode, pin2 = anode)",,SMD (top)
+TP 1.0mm,"TP1,TP2,TP3,TP4,TP5",TestPoint_THT_D1.8mm_Drill1.0mm,5,"Test point, 1.0 mm drill",,THT
+M3 mounting hole (NPTH 3.2 mm),"H1,H2,H3,H4",MountingHole_3.2mm_M3_NPTH,4,"board feature only, no part",,none
+"TMC2209 module, 0.6x0.8 in, SilentStepStick/Pololu pinout (e.g. BIGTREETECH V1.3)","(U1,U2 plug-in)",plugs into U1/U2 sockets,2,NOT soldered; buy separately,,plug-in
+2.54 mm jumper shunt,(JP1 plug-in),fits JP1,1,NOT soldered; buy separately,,plug-in

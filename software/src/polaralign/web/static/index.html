@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Polar Align</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>Polar&nbsp;Align</h1>
+  <span id="badge-hw" class="badge"></span>
+  <span id="conn" class="dot" title="connection"></span>
+</header>
+
+<main>
+  <section id="warnings" class="warn" hidden></section>
+
+  <section class="card hero">
+    <div class="readout">
+      <div class="label">Pole error</div>
+      <div id="err-total" class="big">&ndash;</div>
+      <div id="err-deg" class="sub"></div>
+      <div id="err-detail" class="sub"></div>
+    </div>
+    <button id="btn-align" class="primary">Align</button>
+    <div id="phase" class="phase">Ready.</div>
+    <ol id="iters" class="iters"></ol>
+  </section>
+
+  <section class="card">
+    <h2>Camera &amp; solver</h2>
+    <div class="row">
+      <button id="btn-measure">Solve now</button>
+      <label>Exposure&nbsp;s <input id="exp" type="number" min="0.01" max="10" step="0.05" value="0.5"></label>
+      <label>Gain <input id="gain" type="number" min="1" max="64" step="0.5" value="8"></label>
+      <button id="btn-cam">Set</button>
+    </div>
+    <img id="preview" alt="last frame" hidden>
+    <dl id="solve" class="kv"></dl>
+  </section>
+
+  <section class="card">
+    <h2>Jog</h2>
+    <div id="jogs"></div>
+    <div class="row">
+      <button id="btn-home">Home both axes</button>
+      <button id="btn-release">Release motors</button>
+    </div>
+    <p class="hint">Positions are degrees from the centre of the fine travel (&plusmn;6&deg;). Motors are powered only while moving.</p>
+  </section>
+
+  <section class="card">
+    <h2>Calibration</h2>
+    <dl id="cal" class="kv"></dl>
+    <div class="row">
+      <button id="btn-declare">Declare aligned</button>
+      <button id="btn-clearcal" class="danger">Clear</button>
+    </div>
+    <p class="hint">Align by hand with the telescope's own routine, then press <b>Declare aligned</b>. Repeat on two or three nights to average.</p>
+  </section>
+
+  <section class="card">
+    <h2>Location, time &amp; sensors</h2>
+    <dl id="site" class="kv"></dl>
+    <div class="row">
+      <button id="btn-phone">Use phone location &amp; time</button>
+    </div>
+    <div class="row">
+      <label>Lat <input id="lat" type="number" step="0.0001" placeholder="25.2"></label>
+      <label>Lon <input id="lon" type="number" step="0.0001" placeholder="55.3"></label>
+      <button id="btn-manual">Set</button>
+    </div>
+    <p class="hint" id="geo-hint"></p>
+  </section>
+
+  <section class="card" id="sim-card" hidden>
+    <h2>Simulator controls</h2>
+    <div class="row">
+      <button id="sim-hand">Hand-align to pole (&plusmn;0.015&deg;)</button>
+      <button id="sim-knock">Knock base 5&deg; off</button>
+    </div>
+    <p class="hint">Simulator only: stands in for turning the manual coarse knobs. Order: Home &rarr; Hand-align &rarr; Declare aligned &rarr; Knock &rarr; Align.</p>
+  </section>
+
+  <section class="card">
+    <h2>Log</h2>
+    <pre id="log"></pre>
+  </section>
+</main>
+<script type="module" src="/static/app.js"></script>
+</body>
+</html>

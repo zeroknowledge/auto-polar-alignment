@@ -1,0 +1,493 @@
+{
+ "netlist_checks_passed": 22,
+ "netlist_checks_total": 22,
+ "placement_problems": [],
+ "nets_routable": 35,
+ "nets_routed": 35,
+ "connectivity": {
+  "3V3": {
+   "pads": 12,
+   "components": 1,
+   "connected": true
+  },
+  "5V_PI": {
+   "pads": 3,
+   "components": 1,
+   "connected": true
+  },
+  "SDA": {
+   "pads": 3,
+   "components": 1,
+   "connected": true
+  },
+  "SCL": {
+   "pads": 3,
+   "components": 1,
+   "connected": true
+  },
+  "GND": {
+   "pads": 38,
+   "components": 1,
+   "connected": true
+  },
+  "UART_TX_RAW": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "UART_BUS": {
+   "pads": 4,
+   "components": 1,
+   "connected": true
+  },
+  "STEP_AZ": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "DIR_AZ": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "EN_AZ": {
+   "pads": 3,
+   "components": 1,
+   "connected": true
+  },
+  "STEP_ALT": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "DIR_ALT": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "EN_ALT": {
+   "pads": 3,
+   "components": 1,
+   "connected": true
+  },
+  "ES_AZ_MIN": {
+   "pads": 3,
+   "components": 1,
+   "connected": true
+  },
+  "ES_AZ_MAX": {
+   "pads": 3,
+   "components": 1,
+   "connected": true
+  },
+  "ES_ALT_MIN": {
+   "pads": 3,
+   "components": 1,
+   "connected": true
+  },
+  "ES_ALT_MAX": {
+   "pads": 3,
+   "components": 1,
+   "connected": true
+  },
+  "SPARE": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "+12V": {
+   "pads": 9,
+   "components": 1,
+   "connected": true
+  },
+  "AZ_COIL_A2": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "AZ_COIL_A1": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "AZ_COIL_B1": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "AZ_COIL_B2": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "ALT_COIL_A2": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "ALT_COIL_A1": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "ALT_COIL_B1": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "ALT_COIL_B2": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "12V_RAW": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "5V_BUCK": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "ES_AZ_MIN_IN": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "ES_AZ_MAX_IN": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "ES_ALT_MIN_IN": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "ES_ALT_MAX_IN": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "5V_F": {
+   "pads": 6,
+   "components": 1,
+   "connected": true
+  },
+  "12V_FUSED": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  },
+  "LED_A": {
+   "pads": 2,
+   "components": 1,
+   "connected": true
+  }
+ },
+ "shorts": [],
+ "clearance": {
+  "min_clearance": 0.29100000000000037,
+  "worst": [
+   "F",
+   "R2.1",
+   "3V3",
+   "V3",
+   "EN_AZ",
+   0.29100000000000037
+  ],
+  "violations": [],
+  "min_edge": 0.4999999999999855,
+  "by_kind": {
+   "pad/pour": 0.299,
+   "pad/track": 0.307,
+   "pad/via": 0.291,
+   "pour/track": 0.299,
+   "pour/via": 0.3,
+   "track/track": 0.335,
+   "track/via": 0.312
+  }
+ },
+ "drills": {
+  "holes": 270,
+  "min_hole_to_hole": 0.900232563198183,
+  "worst_pair": [
+   "V6",
+   "J1.26"
+  ],
+  "min_pth_annular_ring": [
+   0.30000000000000004,
+   "J1.1"
+  ],
+  "min_hole_to_edge": 1.85,
+  "min_npth_to_copper": 0.49939772810257416,
+  "via_annular_ring": 0.15
+ },
+ "rules": {
+  "track_widths": [
+   0.3,
+   0.5,
+   0.8
+  ],
+  "min_track": 0.3,
+  "vias": 8,
+  "stitching_vias": 133,
+  "tracks": 145,
+  "track_length_mm": 607.5
+ },
+ "self_test": {
+  "delete_one_SPARE_track_gives_open": true,
+  "rogue_track_gives_short": true,
+  "rogue_track_gives_clearance_violation": true,
+  "near_miss_track_gives_clearance_violation": true
+ },
+ "gerbers": {
+  "F_Cu.gtl": {
+   "file": "carrier-F_Cu.gtl",
+   "objects": 205,
+   "bbox": [
+    0.5,
+    0.5,
+    84.5,
+    59.5
+   ],
+   "within_outline": true,
+   "area_mm2": 4433.244,
+   "replay_vs_generated_sym_diff_mm2": 0.000298,
+   "bbox_matches_generated_geometry": true,
+   "ok": true
+  },
+  "B_Cu.gbl": {
+   "file": "carrier-B_Cu.gbl",
+   "objects": 263,
+   "bbox": [
+    0.5,
+    0.5,
+    84.5,
+    59.5
+   ],
+   "within_outline": true,
+   "area_mm2": 4570.175,
+   "replay_vs_generated_sym_diff_mm2": 0.000221,
+   "bbox_matches_generated_geometry": true,
+   "ok": true
+  },
+  "F_Mask.gts": {
+   "file": "carrier-F_Mask.gts",
+   "objects": 159,
+   "bbox": [
+    1.85,
+    1.85,
+    83.15,
+    58.15
+   ],
+   "within_outline": true,
+   "area_mm2": 460.95,
+   "replay_vs_generated_sym_diff_mm2": 0.000127,
+   "bbox_matches_generated_geometry": true,
+   "ok": true
+  },
+  "B_Mask.gbs": {
+   "file": "carrier-B_Mask.gbs",
+   "objects": 129,
+   "bbox": [
+    1.85,
+    1.85,
+    83.15,
+    58.15
+   ],
+   "within_outline": true,
+   "area_mm2": 404.766,
+   "replay_vs_generated_sym_diff_mm2": 0.000126,
+   "bbox_matches_generated_geometry": true,
+   "ok": true
+  },
+  "F_Paste.gtp": {
+   "file": "carrier-F_Paste.gtp",
+   "objects": 30,
+   "bbox": [
+    3.3,
+    7.3,
+    73.725,
+    33.025
+   ],
+   "within_outline": true,
+   "area_mm2": 48.3,
+   "replay_vs_generated_sym_diff_mm2": 0.0,
+   "bbox_matches_generated_geometry": true,
+   "ok": true
+  },
+  "F_Silkscreen.gto": {
+   "file": "carrier-F_Silkscreen.gto",
+   "objects": 709,
+   "bbox": [
+    1.71,
+    0.35,
+    80.938,
+    59.59
+   ],
+   "within_outline": true,
+   "area_mm2": 386.498,
+   "replay_vs_generated_sym_diff_mm2": 0.000472,
+   "bbox_matches_generated_geometry": true,
+   "ok": true
+  },
+  "B_Silkscreen.gbo": {
+   "file": "carrier-B_Silkscreen.gbo",
+   "objects": 2,
+   "bbox": [
+    16.928,
+    9.816,
+    67.908,
+    15.076
+   ],
+   "within_outline": true,
+   "area_mm2": 20.107,
+   "replay_vs_generated_sym_diff_mm2": 0.0,
+   "bbox_matches_generated_geometry": true,
+   "ok": true
+  },
+  "Edge_Cuts.gm1": {
+   "file": "carrier-Edge_Cuts.gm1",
+   "objects": 8,
+   "bbox": [
+    -0.05,
+    -0.05,
+    85.05,
+    60.05
+   ],
+   "within_outline": true,
+   "matches_outline": true
+  },
+  "PTH": {
+   "file": "carrier-PTH.drl",
+   "holes": 266,
+   "expected": 266,
+   "positions_and_diameters_match": true,
+   "tools": [
+    0.3,
+    0.8,
+    0.95,
+    1.0,
+    1.3,
+    1.6
+   ]
+  },
+  "NPTH": {
+   "file": "carrier-NPTH.drl",
+   "holes": 4,
+   "expected": 4,
+   "positions_and_diameters_match": true,
+   "tools": [
+    3.2
+   ]
+  }
+ },
+ "kicad_pcb": {
+  "footprints": 46,
+  "pads_compared": 155,
+  "mismatches": [],
+  "tracks": 199,
+  "vias": 141,
+  "zones": 2,
+  "nets": 36,
+  "opens_from_file_copper_nonGND": [],
+  "kicad_version": 20240108,
+  "generator": "pcbnew"
+ },
+ "kicad_sch": {
+  "symbols": 46,
+  "lib_symbols": 23,
+  "wires": 140,
+  "labels": 140,
+  "no_connects": 15,
+  "pins_compared": 155,
+  "mismatches": 0,
+  "mismatch_examples": []
+ },
+ "dxf_stl": {
+  "dxf_outline_bbox": [
+   0.0,
+   -0.0,
+   85.0,
+   60.0
+  ],
+  "dxf_outline_area_diff_mm2": 0.015,
+  "dxf_hole_circles": 129,
+  "dxf_hole_circles_expected": 129,
+  "stl_bbox_min": [
+   0.0,
+   0.0,
+   -8.5
+  ],
+  "stl_bbox_max": [
+   85.0,
+   60.0,
+   18.7
+  ],
+  "stl_triangles": 71792,
+  "stl_board_volume_mm3": 7922.0,
+  "board_area_x_thickness": 7922.0
+ },
+ "heights": {
+  "tallest_above_top": 17.1,
+  "j1_below": 8.5,
+  "tall_parts": [
+   [
+    "U2",
+    18.7
+   ],
+   [
+    "U1",
+    18.7
+   ],
+   [
+    "F2",
+    15.6
+   ],
+   [
+    "F1",
+    15.6
+   ],
+   [
+    "C1",
+    13.6
+   ],
+   [
+    "C2",
+    12.6
+   ],
+   [
+    "C3",
+    12.6
+   ],
+   [
+    "J3",
+    11.6
+   ]
+  ]
+ },
+ "module_gap": 9.479999999999997,
+ "silk_omitted": [
+  "+12V",
+  "5V_PI",
+  "ALT MOTOR",
+  "AZ MOTOR",
+  "EN",
+  "ES1-4 = AZ MIN, AZ MAX, ALT MIN, ALT MAX",
+  "GND",
+  "MS1",
+  "RXD",
+  "SAL",
+  "SIG",
+  "VIO"
+ ],
+ "gerbonara_version": "0.13.0",
+ "board": [
+  85.0,
+  60.0,
+  1.6
+ ],
+ "runtime_s": 30.2
+}

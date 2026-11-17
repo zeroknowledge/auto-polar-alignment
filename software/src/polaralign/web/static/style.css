@@ -1,0 +1,52 @@
+:root {
+  --bg: #0e1116; --card: #171c24; --ink: #e7ecf3; --mute: #8a97a8; --line: #2a3340;
+  --ok: #3ecf8e; --warn: #f5a524; --bad: #f0616d; --accent: #4c9aff;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root { --bg: #f2f4f8; --card: #fff; --ink: #14181f; --mute: #5b6676; --line: #d9dee7;
+          --ok: #1a9e63; --warn: #b87500; --bad: #c8323f; --accent: #1f6fe0; color-scheme: light; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+       padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom); }
+header { display: flex; align-items: center; gap: 10px; max-width: 760px; margin: 0 auto; padding: 14px 0 6px; }
+h1 { font-size: 1.15rem; margin: 0; letter-spacing: .02em; }
+h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--mute); margin: 0 0 10px; font-weight: 600; }
+main { max-width: 760px; margin: 0 auto; display: grid; gap: 12px; padding-bottom: 40px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+.hero { text-align: center; }
+.badge { font-size: .7rem; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--warn); color: var(--warn); }
+.badge:empty { display: none; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bad); margin-left: auto; }
+.dot.on { background: var(--ok); }
+.label { color: var(--mute); font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; }
+.big { font-size: 3.4rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.big.ok { color: var(--ok); } .big.mid { color: var(--warn); } .big.far { color: var(--bad); }
+.sub { color: var(--mute); font-size: .92rem; min-height: 1.3em; font-variant-numeric: tabular-nums; }
+button { font: inherit; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 10px;
+         padding: 10px 14px; min-height: 44px; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+button.primary { width: 100%; max-width: 360px; margin: 12px auto 4px; display: block; min-height: 64px; font-size: 1.4rem; font-weight: 700;
+                 background: var(--accent); border-color: var(--accent); color: #fff; }
+button.primary.cancel { background: var(--bad); border-color: var(--bad); }
+button.danger { color: var(--bad); }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 8px 0; }
+label { color: var(--mute); font-size: .9rem; display: inline-flex; gap: 6px; align-items: center; }
+input { font: inherit; width: 6.5em; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+.phase { color: var(--mute); min-height: 1.4em; }
+.iters { list-style: none; padding: 0; margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.iters li { font-size: .8rem; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+.kv { display: grid; grid-template-columns: max-content 1fr; gap: 2px 14px; margin: 0; font-size: .92rem; }
+.kv dt { color: var(--mute); } .kv dd { margin: 0; font-variant-numeric: tabular-nums; word-break: break-word; }
+.hint { color: var(--mute); font-size: .82rem; margin: 6px 0 0; }
+.warn { background: color-mix(in srgb, var(--warn) 14%, var(--card)); border: 1px solid var(--warn); border-radius: 12px; padding: 10px 14px; font-size: .88rem; }
+.warn ul { margin: 0; padding-left: 18px; }
+#preview { width: 100%; border-radius: 8px; margin-top: 8px; border: 1px solid var(--line); }
+.axis { display: grid; grid-template-columns: 4.2em 1fr; gap: 6px; align-items: center; margin-bottom: 8px; }
+.axis .name { font-weight: 600; }
+.axis .pos { color: var(--mute); font-size: .8rem; font-variant-numeric: tabular-nums; grid-column: 2; }
+.axis .btns { display: flex; gap: 4px; flex-wrap: wrap; }
+.axis .btns button { padding: 8px 8px; min-width: 52px; font-size: .85rem; }
+pre { margin: 0; max-height: 220px; overflow: auto; font-size: .78rem; color: var(--mute); white-space: pre-wrap; }

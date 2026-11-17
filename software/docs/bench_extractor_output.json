@@ -1,0 +1,74 @@
+{
+  "colour_bayer_RGGB_1.0s": {
+    "machine": "arm64 / Darwin 27.2.0 / Python 3.11.3",
+    "numpy": "1.26.4",
+    "frame": "1456x1088 uint16 (10-bit), 1.0 s synthetic sky, Bayer RGGB, bayer_mode=all",
+    "runs": 60,
+    "ms_median": 4.66,
+    "ms_min": 4.21,
+    "ms_p95": 5.03,
+    "ms_max": 5.21,
+    "stage_ms_median": {
+      "bin": 0.56,
+      "background": 2.0,
+      "candidates": 0.91,
+      "measure": 1.17,
+      "total": 4.63
+    },
+    "stars_detected_median": 181,
+    "recall_mag_lt_7.5": 0.842,
+    "centroid_rms_px": {
+      "x": 0.18,
+      "y": 0.175
+    },
+    "centroid_median_abs_px": 0.152
+  },
+  "colour_bayer_green_only": {
+    "machine": "arm64 / Darwin 27.2.0 / Python 3.11.3",
+    "numpy": "1.26.4",
+    "frame": "1456x1088 uint16 (10-bit), 1.0 s synthetic sky, Bayer RGGB, bayer_mode=green",
+    "runs": 60,
+    "ms_median": 4.46,
+    "ms_min": 4.1,
+    "ms_p95": 4.74,
+    "ms_max": 4.87,
+    "stage_ms_median": {
+      "bin": 0.55,
+      "background": 1.99,
+      "candidates": 0.9,
+      "measure": 0.98,
+      "total": 4.43
+    },
+    "stars_detected_median": 98,
+    "recall_mag_lt_7.5": 0.602,
+    "centroid_rms_px": {
+      "x": 0.161,
+      "y": 0.18
+    },
+    "centroid_median_abs_px": 0.152
+  },
+  "monochrome_0.5s": {
+    "machine": "arm64 / Darwin 27.2.0 / Python 3.11.3",
+    "numpy": "1.26.4",
+    "frame": "1456x1088 uint16 (10-bit), 0.5 s synthetic sky, monochrome",
+    "runs": 60,
+    "ms_median": 4.32,
+    "ms_min": 4.02,
+    "ms_p95": 5.56,
+    "ms_max": 5.73,
+    "stage_ms_median": {
+      "bin": 0.56,
+      "background": 2.0,
+      "candidates": 0.91,
+      "measure": 0.81,
+      "total": 4.3
+    },
+    "stars_detected_median": 140,
+    "recall_mag_lt_7.5": 0.792,
+    "centroid_rms_px": {
+      "x": 0.159,
+      "y": 0.166
+    },
+    "centroid_median_abs_px": 0.13
+  }
+}

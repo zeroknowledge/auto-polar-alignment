@@ -1,0 +1,28 @@
+# /etc/systemd/system/polaralign.service
+# Adjust User= and the paths to your install (this assumes the repo is checked out at /opt/polaralign/software).
+[Unit]
+Description=Polar alignment base controller (web UI on :8080)
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+SupplementaryGroups=gpio i2c dialout video
+WorkingDirectory=/opt/polaralign/software
+Environment=POLARALIGN_CONFIG=/etc/polaralign.toml
+# numpy/scipy BLAS threads: tiny matrices, threads only add overhead and steal cores from the motion thread
+Environment=OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+ExecStart=/opt/polaralign/software/.venv/bin/polaralign serve
+Restart=on-failure
+RestartSec=3
+# lets the step-generation thread ask for SCHED_FIFO (os.sched_setscheduler); harmless if refused
+AmbientCapabilities=CAP_SYS_NICE
+LimitRTPRIO=20
+# fail safe: the stepper drivers are released (EN high) when the process dies, because the PCB pulls EN high
+# externally; nothing else is needed here.
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,13 @@
+# Python environments and caches
+.venv/
+env/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# macOS
+.DS_Store
+
+# Stray slicer log
+hardware/00000.log

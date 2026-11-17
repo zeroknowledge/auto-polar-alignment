@@ -1,0 +1,67 @@
+# What has not been tested on real hardware
+
+**Nothing in this repository has run on a Raspberry Pi, a camera, a TMC2209, a stepper, an IMU, a GNSS module, or a
+Seestar.** Everything that has been tested ran on one laptop (Apple M4 Max, macOS, Python 3.11) against the simulator,
+fakes and recorded-protocol mocks. This file lists, per component, what that does and does not prove, and how to find out on the
+bench. `polaralign selftest` automates the first four checks (it moves nothing).
+
+Legend: **SIM** = exercised in the simulator/mocks (see `tests/`), **LAPTOP** = ran for real on the laptop, **NONE** = never executed.
+
+## 1. Power-up order for the first real session
+
+1. `polaralign selftest` with the motors *unpowered* (no 12 V): GPIO opens, end stops read open, camera frame arrives,
+   I2C devices answer. TMC2209 checks will FAIL without 12 V on VM/VIO; that is expected.
+2. Power 12 V, `selftest` again: both drivers must answer on UART addresses 0 and 1 with IOIN version 0x21.
+3. `polaralign jog az 0.2` / `alt 0.2` on the bench with the screws disconnected from the load; watch direction and the EN
+   pin (motor must be freewheeling when idle). Press each end stop and watch `/api/status` (`min_switch` / `max_switch`).
+4. `polaralign home`: end stops must stop the screws. Be ready to pull power. If a screw runs the wrong way into the
+   wrong switch, set `invert_dir = true` for that axis (or swap the MIN/MAX connectors).
+5. Only then bolt the camera on and run the closed loop.
+
+## 2. Component by component
+
+| Component | Status | What is and is not known |
+|---|---|---|
+| **Pin map vs. PCB** | LAPTOP | `tests/test_pin_map.py` reads `hardware/pcb/netlist.json` (read-only) and checks every GPIO, the UART topology, the address strapping, the EN pull-ups and the end-stop filters against the software defaults and against the standard Pi header table. No mismatch found (see `PIN_MAP_REVIEW.md`). The *PCB itself* has not been built or ERC/DRC-checked (per `hardware/pcb/README.md`). |
+| **GPIO (lgpio)** | NONE | `LgpioBackend` is a thin wrapper written from the lgpio documentation. Never run. Unknown: whether `gpio_set_debounce_micros` affects plain `gpio_read` (we debounce in software anyway), whether pull-ups are applied the way the PCB assumes, thread-safety of one lgpio handle shared by the web and step threads (status reads end stops while a move runs). On a Pi 5 the header may be `gpiochip4`: set `motion.gpiochip`. |
+| **Step generation timing** | SIM (logic only) | The pulse loop is Python with absolute deadlines (`perf_counter_ns`), coarse sleep + spin, and SCHED_FIFO during a burst *if permitted*. Nobody has measured its jitter on a Pi Zero 2 W under web-server load. A GIL stall of a few ms pauses the stepper, which then restarts at cruise speed; at the default 1 rev/s (200 full steps/s) that should be inside a NEMA 17 pancake's pull-in rate but is unverified. Mitigations if it misbehaves: lower `max_speed_rev_s`, raise `accel_rev_s2`, or move stepping to its own process / the TMC2209 `VACTUAL` internal generator (not implemented). |
+| **TMC2209 UART** | SIM (against my own fake of the datasheet) | CRC-8 reproduces the well-known `05 00 00 48` vector. The datagram layout, IFCNT write acknowledgement, echo handling (every byte we send is echoed back through the 1 k series resistor) and register bit fields are from the datasheet and checked only against `FakeTmcBus`, which is *my reading of the datasheet*, not silicon. Unknown: that the BIGTREETECH V1.3 module's pin 4 is really PDN_UART (see `PIN_MAP_REVIEW.md`), that 115200 baud is reliable on a shared single wire with 1 k, that `GCONF.pdn_disable=1` is what your module needs, that the current formula holds for your sense resistors (`motion.rsense_ohm`, default 0.11). |
+| **Current cut after moves** | SIM | EN is driven high after every move and on any error/exit (and the PCB pulls EN high on its own if the process dies). Not measured with a meter/scope. After release the load may let the rotor snap to a detent (up to one full step = 12.9 arcsec on azimuth); the loop absorbs this in the next measurement, the simulator models it as a 0.004 deg random shift. |
+| **End-stop wiring and discovery** | SIM | Defaults follow `hardware/README.md` as of this writing: normally-closed switches (trip = HIGH), triggers at 8.05 deg (az) and 7.35/7.15 deg (alt), altitude 150 mm arm. Homing watches both switches, relabels MIN/MAX if the connectors are the other way round, and does a short safe move first when it starts on a switch. None of it has met a real switch; the lever geometry and trigger angles are the hardware session's own unverified figures. |
+| **End-stop reading** | SIM | Switch-to-GND with internal pull-up and the PCB's 1 k + 100 nF filter. With the Pi's internal pull-up (~50 k) the release edge has a ~5 ms time constant; the software requires two consecutive closed readings (about one full step apart), so a switch needs to stay closed for ~5-20 ms depending on speed. Contact bounce on a real micro-switch has not been seen. |
+| **Homing and limits** | SIM | MIN-seek, back-off, learned limits when a stop is hit early, optional `measure_span`. The simulator's stops are idealised; real stops will have hysteresis, and a motor that stalls against a stop will lose position (the loop recovers because every end-stop hit re-references the axis). |
+| **Backlash / preload handling** | SIM | Moves end in `preload_dir`; the loop measures backlash by a raw out-and-back jog. For azimuth the spring pulls clockwise (hardware/README.md), and the loop sets `preload_dir` from the learned sky motion (needs a site; tested in both hemispheres and both motor wirings, against the simulator's own convention). The altitude springs' direction is not documented: set `motion.alt.preload_dir` by watching the bench. The simulator's dead-band + friction model is symmetric and simpler than a spring-preloaded printed nut. |
+| **Camera (picamera2, IMX296 colour)** | NONE | The user's camera is the **Waveshare IMX296 Global Camera (A), SKU 32501: a colour (Bayer) sensor with an integrated IR-cut filter** (discontinued, so the camera layer is a replaceable interface: `register_camera`). `Picamera2Camera` was written against the picamera2 manual without a camera or the library installed. Unknown: sensor-mode names and the real raw format string (the Bayer pattern is read from it, falling back to `camera.bayer_pattern`, and corrected for software flips), that `capture_array("raw")` returns 10-bit values in 16-bit words as assumed, how many frames must be discarded after a control change, maximum exposure, hot/cold pixel behaviour, sensor black level, whether the image is mirrored (the solver cannot solve a mirrored image: `camera.flip_horizontal/vertical`). `use_raw = false` falls back to the ISP's debayered 8-bit Y plane (tone-mapped, worse). The simulator's colour model (CFA transmission 0.35/0.50/0.30, i.e. 2.4x less light than mono; random star colours) is an estimate matching the 2-3x figure, not a measurement. |
+| **Optics, focus, limiting magnitude** | NONE | The simulator's photon budget is an engineering estimate for a 16 mm f/1.4 lens on the colour sensor (about magnitude 8 in 1 s, the default exposure now); real optics, vignetting, coma, IR leak, sky glow, dew and a possibly non-flat focal plane are unknown. The extractor and solver were tested to degrade gracefully down to ~25-30 detected stars; whether a real southern/low-density field gives that many is a phase-0 question. |
+| **Star extractor speed on a Pi Zero 2 W** | NONE | Measured 4.6 ms median on an M4 Max core (see `BENCHMARKS.md`). A Cortex-A53 at 1 GHz with slow LPDDR2 is roughly 15-40x slower for this kind of numpy work, i.e. very roughly 70-180 ms per frame: **an extrapolation, not a measurement**. `polaralign bench` prints the real number on the target. |
+| **Plate solver speed / RAM on a Pi Zero 2 W** | LAPTOP only | Median solve ~10 ms with refit on the laptop; database arrays 10.3 MB, +13 MB RSS. Pi numbers unknown (`solve_timeout_ms` is 4 s). The whole `polaralign serve --sim` process measured 172 MB idle, 229 MB after a full session *on macOS*; Linux/aarch64 numbers unknown but there is no obvious reason to expect trouble inside 512 MB. |
+| **Solver database** | LAPTOP | Built from the star table inside the cedar-solve wheel (Hipparcos to mag 8.03, epoch 2024.0), **not** from a freshly downloaded `hip_main.dat`: the CDS host was unreachable from the build machine. Rebuild with `polaralign build-db --catalogue hip_main.dat` where you can reach it. The simulator uses the same table as the solver, so catalogue errors (position/proper-motion errors, double stars, photometry) are not simulated. |
+| **Refraction model / pole target** | LAPTOP, vs ERFA | Precession matches ERFA to < 0.001 arcsec; nutation within 0.2 arcsec. Refraction (Saemundsson/Bennett) was compared with ERFA's own model in the simulator (a deliberate model mismatch). What a real *telescope's* polar-alignment routine treats as "aligned" (true pole, apparent pole, or just its own solve) is unknown; the stored calibration absorbs the difference at the calibration site (see README, "Refraction"). Aberration (<= 20.5 arcsec) is neglected in the aligner and included in the simulator. |
+| **Camera-to-axis calibration** | SIM | Repeatability on the real mechanism (keyed seating of the telescope) is the biggest unknown in the 0.1 deg budget; the simulator only shows that the *loop* adds < 0.01 deg on top of whatever the calibration error is. |
+| **Mechanical stiffness, creep, flexure when current is cut** | NONE | Modelled only as a 0.004 deg random release shift and a symmetric backlash. The settle time (1.5 s) is the design doc's number. |
+| **IMU (ICM-20948)** | SIM (register-level fake) | Register map from the datasheet (bank switching via 0x7F). Never talked to a chip. Knock thresholds (0.06 g, 8 dps) are guesses; stepper vibration may need `ImuMonitor.inhibit` tuning. The magnetometer path (bypass mode, AK09916) is written but not exposed in the UI and not tested. Which IMU axis is the polar axis is configuration (`imu_axis_in_sensor`). |
+| **GNSS (u-blox DDC)** | SIM (NMEA parser + fake bus) | NMEA parsing and checksum are tested with synthetic sentences; the DDC register protocol (0xFD/0xFE/0xFF) is from the u-blox receiver description. Many cheap breakouts are UART-only (BOM B28 warns about this). Cold-start time to first fix, antenna placement and the Pi's I2C clock-stretching bug are unknown. |
+| **Phone fallback** | LAPTOP (API), NONE (phones) | The browser Geolocation API is **blocked on plain-http pages** by Chrome and Safari; served from `http://192.168.4.1:8080` the "Use phone location" button will usually be refused. The UI then says so and asks for typed latitude/longitude, but still takes the phone's clock. Serving HTTPS with a self-signed certificate would fix it; not done. Untested on iOS/Android. |
+| **Hotspot with fallback** | NONE | `deploy/setup_network.sh` uses NetworkManager profile priorities. Never run. Known limitation: after the hotspot comes up, NetworkManager does not look for known networks again until reboot. |
+| **systemd service, boot config, Pi OS packages** | NONE | `deploy/` files are written from documentation. Bookworm package names (`python3-picamera2`, `python3-lgpio`, ...) and `dtoverlay=imx296` / `disable-bt` behaviour should be checked against the current Raspberry Pi docs. |
+| **astrometry.net fallback** | LAPTOP (FITS writer, WCS geometry) | `solve-field` is not installed here; the subprocess call has never been run. |
+| **Seestar plugin** | MOCK | See below. |
+| **Web UI on phones** | LAPTOP browser only | Layout checked in a desktop browser pane; touch behaviour, Safari, Android Chrome and the SSE connection through the Pi hotspot are untested. No authentication unless `web.token` is set (anyone on the hotspot can move the motors). |
+
+## 3. Seestar plugin (phase 4)
+
+The plugin is isolated (`polaralign.plugins.seestar`, imported only when `seestar.enabled = true`).
+
+* **Verified:** the maths that turns a telescope-reported polar error into a trim of the stored camera-to-axis vector
+  (`trim_calibration`): in the simulator a sloppy 0.06 deg hand alignment is corrected to < 0.025 deg on the next session
+  (`tests/test_seestar.py`). That does not depend on the Seestar at all.
+* **Assumed, never tried against a telescope:** TCP port 4700 with one JSON object per line, request `{"id", "method"}`,
+  reply echoing `id` with `code`/`result`, events with an `Event` key, UDP discovery on port 4720. Tests use a mock that speaks
+  *this assumed* protocol, so they prove only that our plumbing is self-consistent.
+* **Unknown and left empty on purpose:** the method name that returns the polar-alignment error, the field names, the units
+  and the sign conventions (`seestar.polar_align_method`, `result_alt_key`, `result_az_key`, `units`, `sign_alt`,
+  `sign_az`). Until you have probed your firmware and filled them in, `POST /api/seestar/verify` answers 501 with an
+  explanation rather than guessing. The community projects have been broken by firmware updates before (v2.4); expect that
+  to happen again, and treat the plugin as disposable.
+* Alternative that needs no protocol: read the residual from the Seestar app and call `trim_calibration` with it (or
+  add a small form to the UI).

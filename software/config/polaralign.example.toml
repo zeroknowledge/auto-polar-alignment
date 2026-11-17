@@ -1,0 +1,122 @@
+# polaralign configuration (all keys are optional; these are the defaults).
+# Use:  polaralign --config /etc/polaralign.toml serve      or      export POLARALIGN_CONFIG=/etc/polaralign.toml
+
+hardware  = "pi"                 # "pi" | "sim"
+state_dir = ""                   # calibration, motion hints; default ~/.local/share/polaralign
+
+[camera]
+backend       = "picamera2"      # "picamera2" | "fake"
+width         = 1456             # IMX296
+height        = 1088
+exposure_s    = 1.0              # colour sensor + IR-cut filter: roughly 2-3x less starlight than mono, so longer
+gain          = 8.0              # analogue gain multiplier (libcamera AnalogueGain)
+colour        = true             # Waveshare IMX296 Global Camera (A), SKU 32501: Bayer colour sensor + IR-cut filter
+bayer_pattern = "RGGB"           # fallback; picamera2 reports the real pattern in the raw format name (e.g. SBGGR10)
+lens_focal_mm = 16.0             # -> 17.84 x 13.4 deg, 44.5 arcsec/pixel with 3.45 um pixels
+pixel_um      = 3.45
+flip_horizontal = false          # the solver cannot solve a mirrored image: fix a mirrored mount here
+flip_vertical   = false
+use_raw       = true
+
+[extractor]
+backend         = "numpy"        # our own extractor; "tetra3" = tetra3's centroider (Apache-2.0) for comparison
+threshold_sigma = 5.0
+bayer_mode      = "all"          # Bayer mosaics: centroid every pixel ("all", default) or the green pixels only ("green")
+max_stars       = 80
+saturation_adu  = 1000           # 10-bit raw
+
+[solver]
+backend            = "tetra3"    # Cedar Solve.  "astrometry" = solve-field (slow, robust, needs index files)
+database           = "auto"      # "auto" | "default" (bundled) | /path/to/db.npz  (build: polaralign build-db)
+fov_max_error_deg  = 1.0
+solve_timeout_ms   = 4000
+max_stars          = 40
+max_rmse_arcsec    = 60.0
+
+[motion]
+gpiochip        = 0              # Pi Zero 2 W / Pi 4: 0.  Pi 5: check `gpiodetect` (header is on the RP1 chip)
+uart_port       = "/dev/ttyAMA0" # needs dtoverlay=disable-bt and the serial login console off
+uart_baud       = 115200
+microsteps      = 16
+run_current_a   = 0.5            # RMS; 0.4 - 0.6 A. The driver is also disabled (EN high) after every move.
+rsense_ohm      = 0.11           # BIGTREETECH TMC2209 modules; check your module's sense resistors
+stealthchop     = true
+max_speed_rev_s = 1.0            # screw revolutions per second
+accel_rev_s2    = 2.0
+
+[motion.az]                      # pins: BCM numbers from hardware/pcb/netlist.json
+step_pin = 17
+dir_pin  = 27
+enable_pin = 22
+endstop_min_pin = 5
+endstop_max_pin = 6
+uart_address = 0
+arm_mm   = 80.0                  # M6x1 screw on an 80 mm arm -> 0.716 deg per turn, 12.9 arcsec per full step
+pitch_mm = 1.0
+travel_deg = 6.0                 # +/- working range about the centre (soft limits)
+end_stop_deg = 8.05              # centre -> end-stop trigger, each side (hardware/README.md)
+endstop_trip_level = 1           # switches are wired common + normally-closed: a pressed OR broken switch reads HIGH.
+                                 # Use 0 for normally-open switches that pull the pin to GND.
+invert_dir = false               # flip if positive steps move the wrong way (the loop learns signs anyway;
+                                 # homing finds out which switch is at which end by itself)
+preload_dir = 1                  # every move finishes in this direction (+1 = increasing step count)
+preload_sky = "clockwise"        # the azimuth spring pulls the plate clockwise seen from above: with a site known, the
+                                 # loop sets preload_dir from the sky motion it learns.  "" = use preload_dir as given.
+backlash_overshoot_deg = 0.12
+mechanics_confirmed = true
+
+[motion.alt]
+step_pin = 23
+dir_pin  = 24
+enable_pin = 25
+endstop_min_pin = 13
+endstop_max_pin = 19
+uart_address = 1
+arm_mm   = 150.0                 # hardware/README.md: M6x1 on a 150 mm tangent arm = 6.9 arcsec per full step.
+pitch_mm = 1.0                   # A design value, not yet measured: set mechanics_confirmed = true once checked.
+travel_deg = 6.0
+end_stop_deg = 7.25              # switches trigger at 7.35 / 7.15 deg
+endstop_trip_level = 1
+preload_dir = 1                  # direction of the altitude springs is not documented: find it on the bench
+mechanics_confirmed = false
+
+[align]
+target_arcmin = 3.0              # success threshold (0.05 deg)
+polish_arcmin = 1.0              # keep correcting (iterations permitting) until below this
+max_iterations = 8
+gain = 0.8
+settle_s = 1.5
+learn_jog_deg = 0.3
+refraction = "model"             # "model": axis -> apparent (refracted) pole; "off": axis -> true pole of date
+
+[site]                           # optional fixed site (otherwise GNSS, phone or manual entry in the web UI)
+# latitude_deg  = 25.2
+# longitude_deg = 55.3
+pressure_hpa  = 1010.0
+temperature_c = 10.0
+
+[sensors]
+i2c_bus = 1
+imu_enabled  = true
+imu_address  = 0x68              # 0x69 if AD0 is high
+imu_axis_in_sensor = [0.0, 0.0, 1.0]   # direction of the telescope's polar axis in the IMU's own frame
+knock_threshold_g = 0.06
+gnss_enabled = true
+gnss_address = 0x42
+
+[web]
+host  = "0.0.0.0"
+port  = 8080
+# token = "change-me"            # if set, POST requests need the header X-Token (the UI reads ?token=... once)
+
+[seestar]                        # phase 4, off by default, unofficial interface: read the README first
+enabled = false
+host = ""
+port = 4700
+polar_align_method = ""          # unknown: probe your telescope's firmware, then fill in
+result_alt_key = ""
+result_az_key  = ""
+units = "arcmin"
+sign_alt = 1
+sign_az  = 1
+trim_weight = 0.5

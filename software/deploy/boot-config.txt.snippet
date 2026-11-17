@@ -1,0 +1,26 @@
+# Add to /boot/firmware/config.txt (Raspberry Pi OS Bookworm; /boot/config.txt on older releases), then reboot.
+# UNTESTED on real hardware; check each line against the current Raspberry Pi documentation.
+
+# --- IMX296 global-shutter camera (CSI): Waveshare IMX296 Global Camera (A), SKU 32501, a COLOUR sensor -----
+camera_auto_detect=0
+dtoverlay=imx296
+# (",mono" is only for a monochrome IMX296 board; with the colour board it would mis-describe the sensor.)
+# Raw frames are Bayer RAW10 (1456 x 1088); polaralign reads the tile pattern from the raw format and reduces
+# the mosaic itself (see README, "Camera").
+# the Pi Zero 2 W has the small 22-pin CSI connector: use a 22-pin to 15-pin ribbon (see hardware/BOM.md B04)
+
+# --- TMC2209 single-wire UART on GPIO14/15 -----------------------------------------------------------
+# The PL011 UART (/dev/ttyAMA0) is normally used by Bluetooth on the Zero 2 W.  Disable Bluetooth so the
+# PL011 appears on GPIO14/15 as /dev/ttyAMA0 (/dev/serial0 then points to it).
+enable_uart=1
+dtoverlay=disable-bt
+# Also: remove "console=serial0,115200" from /boot/firmware/cmdline.txt (or: sudo raspi-config nonint do_serial_cons 1),
+# and:  sudo systemctl disable --now hciuart.service serial-getty@ttyAMA0.service
+
+# --- I2C bus 1 (GPIO2/3): ICM-20948 IMU (0x68/0x69) and u-blox GNSS (0x42) -------------------------------
+dtparam=i2c_arm=on
+# The Pi's I2C controller mishandles clock stretching; if the GNSS or IMU read garbage, lower the speed:
+dtparam=i2c_arm_baudrate=100000
+
+# --- optional: slightly lower idle power ------------------------------------------------------------------
+dtparam=audio=off
