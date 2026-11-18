@@ -52,10 +52,10 @@ sweep below). Strength, stiffness and fit with your actual lazy Susan, motor, be
    `M3_INSERT`) and rerun `python cad/aligner_cad.py stl` and `slicer/slice_all.sh`.
 2. **`01_nut_trunnion_x3`** (34 min, 13 g): three trunnions, two used and one spare.
 3. **`04_az_cap`** (9 min, 3 g).
-4. **`03_az_plate`** (2.9 h, 73 g), the revised one.
-5. **`02_base_spider`** (4.6 h, 113 g).
-6. **`05_coarse_cheek_x2`** (2.1 h, 55 g), **`08_alt_cheek_x2`** (1.2 h, 31 g), **`07_tilt_plate_2`** (1.0 h, 28 g).
-7. **`06_tilt_plate_1`** (4.2 h, 116 g) and **`09_top_plate`** (4.6 h, 124 g): the two big ones. The tilt plate gained four
+4. **`03_az_plate`** (3.0 h, 75 g), the revised one.
+5. **`02_base_spider`** (5.9 h, 146 g).
+6. **`05_coarse_cheek_x2`** (2.1 h, 55 g), **`08_alt_cheek_x2`** (1.2 h, 31 g), **`07_tilt_plate_2`** (1.8 h, 50 g).
+7. **`06_tilt_plate_1`** (4.2 h, 116 g) and **`09_top_plate`** (4.7 h, 125 g): the two big ones. The tilt plate gained four
    screw holes for the electronics case after the first Batch 2 slice, so use the current file.
 8. **`10_electronics_case`** (2.7 h, 86 g) and **`11_case_lid`** (0.8 h, 29 g).
 9. **`12_cam_cradle`** (1.5 h, 33 g), **`13_cam_plate`** (15 min, 6 g), **`14_dew_shield`** (1.0 h, 18 g).
